@@ -148,7 +148,7 @@ function init(){
    .change(function(){
              $('#svg').remove();
              $('#node_title').children().remove().end();
-             d3.json($('#graph_select').val(),draw_graph);});
+             d3.json('data/'+$('#graph_select').val(),draw_graph);});
 
   $('<br><label for=node_color_pick>Node Color: </label>')
     .appendTo('#prop_select')
@@ -161,7 +161,7 @@ function init(){
    .appendTo("#prop_select");
 
 
-   $.ajax({url: "http://127.0.0.1:8000",
+   $.ajax({url: "http://127.0.0.1:8000/data",
            success: function(data){
                       $(data).find("a:contains(.json)")
                              .each(function(n){
@@ -191,7 +191,7 @@ function init_graph(){
 // if the request for json fails, it will give
 // an error(passed to draw_graph), otherwise
 // it sends the json to draw_graph
-  d3.json($('#graph_select').val(),draw_graph);
+  d3.json('data/'+$('#graph_select').val(),draw_graph);
 }
 
 function draw_graph(error, graph_data) {

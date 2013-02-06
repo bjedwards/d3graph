@@ -1,0 +1,21 @@
+.node {
+  stroke: #000000;
+  stroke-width: 1px;
+  fill: #ff0000;
+}
+
+.link {
+  stroke: #000000;
+  stroke-opacity: 0.5;
+  stroke-width: 1.5px
+}
+
+input.float {
+  font-family:monospace;
+  width:5em;
+}
+
+input.int {
+  font-family:monospace;
+  width:5em;
+}

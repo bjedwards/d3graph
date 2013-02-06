@@ -1,0 +1,12 @@
+{
+	"nodes":[
+		{"name":"source","type":"source","group":1},
+		{"name":"target","type":"target","group":2},
+		{"name":"source & target","type":"both","group":3}
+	],
+	"links":[
+		{"source":0,"target":1,"value":1},
+		{"source":0,"target":2,"value":2},
+		{"source":2,"target":1,"value":3}
+	]
+}

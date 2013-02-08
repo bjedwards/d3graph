@@ -1,3 +1,53 @@
+body {
+  background-color:#FFFFFF;
+}
+
+label {
+  text-align:left;
+  display:inline-block;
+  width:95px;
+}
+
+input {
+  text-align:right;
+  display:inline-block;
+}
+
+#controls_div {
+  position:absolute;
+  width:300px;
+}
+
+#node_color_div {
+}
+
+#gs_div {
+}
+
+#layout_div {
+}
+
+#svg_div {
+  position:absolute;
+  top:40px;
+  left:350px;
+  background-color:#DEDEDE;
+}
+
+ul {
+  list-style:none;
+  padding:0;
+  margin:0;
+}
+
+fieldset.outer {
+  width:300px;
+}
+
+fieldset.inner {
+  width:250px;
+}
+
 .node {
   stroke: #000000;
   stroke-width: 1px;
@@ -12,10 +62,18 @@
 
 input.float {
   font-family:monospace;
-  width:5em;
+  width:95px;
 }
 
 input.int {
   font-family:monospace;
-  width:5em;
+  width:95px;
+}
+
+input[type="range"] {
+  width:95px;
+}
+
+select {
+  width:95px;
 }

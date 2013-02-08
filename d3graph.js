@@ -4,164 +4,115 @@ var default_node_size = 5;
 // size of graph viewport
 var graph_width = 1024;
 var graph_height = 768;
-
+var gd;
 var node;
 var svg;
+var e;
 
 var force = d3.layout.force()
-    .gravity(.1)
-    .charge(-120)
-    .linkDistance(30)
-    .friction(.9)
-    .theta(.1)
-    .linkStrength(1)
-    .alpha(.1)
-    .size([graph_width, graph_height]);
+                     .gravity(.1)
+                     .charge(-120)
+                     .linkDistance(30)
+                     .friction(.9)
+                     .theta(.1)
+                     .linkStrength(1)
+                     .alpha(.1)
+                     .size([graph_width, graph_height]);
 
-//Color for groupings
-//returns a coloring for 1-20
 function init(){
- 
-  $('<div></div>')
-   .attr({"id":"layout_inputs"})
-   .css({"float":"left"})
-   .prependTo('body');
   
-  $('<label for=gravity>Gravity: </label>').appendTo('#layout_inputs');
-  $('<input></input>')
-   .attr({"id":"gravity",
-          "type":"range",
-          "min":0,
-          "max":1,
-          "step":0.01,
-          "size":5,
-          "value":0.1})
-   .change(function(){
-             force.gravity(Number($('#gravity').val())).resume();
-           })
-   .appendTo('#layout_inputs');
-
-  $('<br><label for=charge>Charge: </label>').appendTo('#layout_inputs');
-  $('<input></input>')
-   .attr({"id":"charge",
-          "type":"number",
-          "max":0,
-          "step":10,
-          "size":6,
-          "value":-120,
-          "class":"int"})
-   .change(function(){
-             force.charge(Number($('#charge').val())).stop().start();
-           })
-   .appendTo('#layout_inputs');
-
-  $('<br><label for=linkDistance>linkDistance: </label>').appendTo('#layout_inputs');
-  $('<input></input>')
-   .attr({"id":"linkDistance",
-          "type":"number",
-          "min":0,
-          "step":5,
-          "value":30,
-          "class":"int"})
-   .change(function(){
-             force.linkDistance(Number($('#linkDistance').val())).stop().start();
-           })
-   .appendTo('#layout_inputs');
-
-  $('<br><label for=friction>Friction: </label>').appendTo('#layout_inputs');
-  $('<input></input>')
-   .attr({"id":"friction",
-          "type":"range",
-          "min":0,
-          "max":1,
-          "step":.01,
-          "value":0.9,
-          "class":"float"})
-   .change(function(){
-             force.friction(Number($('#friction').val())).resume();
-           })
-   .appendTo('#layout_inputs');
-
-  $('<br><label for=friction>Theta: </label>').appendTo('#layout_inputs');
-  $('<input></input>')
-   .attr({"id":"theta",
-          "type":"range",
-          "min":0,
-          "max":1,
-          "step":.01,
-          "value":0.1,
-          "class":"float"})
-   .change(function(){
-             force.theta(Number($('#theta').val())).resume();
-           })
-   .appendTo('#layout_inputs');
+  $("#layout_legend").click(function(){
+                              $("#layout_list").slideToggle("slow");
+                            });
   
-  $('<br><label for=linkStrength>Link Strength: </label>').appendTo('#layout_inputs');
-  $('<input></input>')
-   .attr({"id":"linkStrength",
-          "type":"range",
-          "min":0,
-          "max":1,
-          "step":.01,
-          "value":1,
-          "class":"float"})
-   .change(function(){
-             force.linkStrength(Number($('#linkStrength').val())).stop().start();
-           })
-   .appendTo('#layout_inputs');
+  $("#node_color_legend").click(function(){
+                                 $("#node_color_list").slideToggle("slow");
+                                });
 
-  $('<br><label for=linkStrengthProp>Link Strength Proportional: </label>')
-    .appendTo('#layout_inputs');
-  $('<input></input>')
-    .attr({"id":"linkStrengthProp",
-           "type":"checkbox",
-           "value":"off"})
-    .change(function(){
-              force.linkStrength(meta_link_strength(Number($('#linkStrength').val()))).stop().start();
-            })
-    .appendTo('#layout_inputs');
+  $("#gravity").change(function(){
+                         force.gravity(Number($('#gravity').val())).resume();
+                       });
 
-  $('<br><label for=alpha>Alpha: </label>')
-    .appendTo('#layout_inputs');
-  $('<input></input>')
-    .attr({"id":"alpha",
-           "type":"range",
-           "min":0,
-           "max":1,
-           "step":0.01,
-           "value":0.1})
-    .change(function(){
-              force.alpha(Number($('#alpha').val())).resume();})
-    .appendTo('#layout_inputs');
+  var charge_func = function() {
+                      var c_def = $("#charge").val();
+                      var c;
+                      if ($("#charge_prop").is(':checked')){
+                        $("#charge_select").removeAttr("disabled");
+                        prop = $("#charge_select").val()
+                        c = safe_val(prop,c_def,"number");
+                      }
+                      else {
+                        $("#charge_select").attr("disabled",true);
+                        c = c_def;
+                      }
+                      force.charge(c).stop().start();
+                    };
+  $("#charge").change(charge_func);
+  $("#charge_prop").change(charge_func);
+  $("#charge_select").change(charge_func);
+  
+  var ld_func = function() {
+                  var ld_def = $("#link_distance").val();
+                  var ld;
+                  if ($("#link_distance_prop").is(':checked')){
+                    $("#ld_select").removeAttr("disabled");
+                    prop = $("#ld_select").val()
+                    ld = safe_val(prop,ld_def,"number");
+                  }
+                  else {
+                      $("#ld_select").attr("disabled",true);
+                      ld = ld_def;
+                    }
+                  force.linkDistance(ld).stop().start();
+                };
+
+  $("#link_distance").change(ld_func);
+  $("#link_distance_prop").change(ld_func);
+  $("#ld_select").change(ld_func);
+
+  $("#friction").change(function(){
+                          force.friction(Number($('#friction').val())).resume();
+                        });
+
+  $("#theta").change(function(){
+                       force.theta(Number($('#theta').val())).resume();
+                     });
+
+  var ls_func = function() {
+                  var ls_def = $("#link_strength").val();
+                  var ls;
+                  if ($("#link_strength_prop").is(':checked')){
+                    $("#ls_select").removeAttr("disabled");
+                    prop = $("#ls_select").val()
+                    ls = safe_val(prop,ls_def,"number");
+                  }
+                  else {
+                      $("#ls_select").attr("disabled",true);
+                      ls = ls_def;
+                    }
+                  force.linkStrength(ls).stop().start();
+                };
+  
+  $("#link_strength").change(ls_func);
+
+  $("#link_strength_prop").change(ls_func);
+
+  $("#ls_select").change(ls_func);
+
+  $("#alpha").change(function(){
+                       force.alpha(Number($('#alpha').val())).resume();
+                     });
    
-
-  $('<div></div>')
-   .attr({"id":"prop_select"})
-   .css({"float":"right"})
-   .appendTo('body');
   
-  $('<label for=graph_select>Select Graph: </label>')
-    .appendTo('#prop_select')
-  $('<select></select>')
-   .attr({"id":"graph_select"})
-   .appendTo('#prop_select')
-   .change(function(){
-             $('#svg').remove();
-             $('#node_title').children().remove().end();
-             d3.json('data/'+$('#graph_select').val(),draw_graph);});
-
-  $('<br><label for=node_color_pick>Node Color: </label>')
-    .appendTo('#prop_select')
-
-  $('<input></input>')
-   .attr({"id":"node_color_pick",
-          "type":"color",
-          "value":"#ff0000"})
-   .change(function(){ node.style("fill", function(d){return $('#node_color_pick').val();}); })
-   .appendTo("#prop_select");
-
-
-   $.ajax({url: "http://127.0.0.1:8000/data",
+  $("#graph_select").change(function(){
+                              $('svg#graph_svg').empty();
+                              if ($('#graph_select').val() == "none")
+                                return;
+                              else
+                                d3.json('data/'+$('#graph_select').val(),draw_graph);
+                            });
+   
+  $.ajax({url: "http://127.0.0.1:8000/data",
            success: function(data){
                       $(data).find("a:contains(.json)")
                              .each(function(n){
@@ -171,19 +122,41 @@ function init(){
                                             .text(f));
                                    });},
            complete:init_graph });
+
+  $("#node_color_pick").change(function(){
+                                 node.style("fill",function(d) {
+                                                     return $('#node_color_pick').val();
+                                                   });
+                                         });
+
+  //$('<br><label for=node_color_pick>Node Color: </label>')
+  //  .appendTo('#prop_select');
+  //$('<input></input>')
+  // .attr({"id":"node_color_pick",
+  //        "type":"color",
+  //        "value":"#ff0000"})
+  // .change(function(){ node.style("fill", function(d){return $('#node_color_pick').val();}); })
+  // .appendTo("#prop_select");
+
 };
 
-function meta_link_strength(n){
+function safe_val(property,def,type){
   return function(d) {
-    if ($("#linkStrengthProp").prop("checked"))
-      if (typeof d.strength == "undefined")
-        return n;
-      else
-        return d.strength
+    if ((typeof d[property] == "undefined") || (typeof d[property] != type))
+      return def;
     else
-      return n;
+      return d[property];
   };
 };
+
+function get_keys(objs){
+    var all_keys = {};
+    var keys;
+    objs.forEach(function(n){
+                     Object.keys(n).forEach(function(k){
+                                              all_keys[k]=true;});});
+    return Object.keys(all_keys);
+}
 
 function init_graph(){
 // grab the graph data, and parse it into ) })
@@ -191,21 +164,25 @@ function init_graph(){
 // if the request for json fails, it will give
 // an error(passed to draw_graph), otherwise
 // it sends the json to draw_graph
+  if ($('#graph_select').val() == "none")
+    return;
   d3.json('data/'+$('#graph_select').val(),draw_graph);
 }
 
 function draw_graph(error, graph_data) {
-  $('<div></div>')
-   .attr({"id":"svg"})
-   .appendTo('body');
-  
+  if (error !== null)
+  {
+    console.log("Could not parse data");
+    return;
+  }
+  gd = graph_data;
   // Look in the webpage for the chart id
   // Once found (t)is is a div) I have no idea
   // we then append an svg element to it with the 
   // appropriate graph.
-  svg = d3.select("#svg").append("svg")
-      .attr("width", graph_width)
-      .attr("height", graph_height);
+  svg = d3.select("svg#graph_svg")
+          .attr("width", graph_width)
+          .attr("height", graph_height);
   //The force directed layout, sets up settings for the layout
 
   // Give the force directed layout the node
@@ -248,8 +225,21 @@ function draw_graph(error, graph_data) {
           .call(force.drag);
 
 
-    var ks = node_keys(graph_data.nodes);
-    ks.forEach(function(n){$('#node_title')
+    var ks_l = get_keys(graph_data.links);
+    $("#ls_select").empty();
+    ks_l.forEach(function(n){$('#ls_select')
+                              .append($('<option>',{n:n}).text(n));});
+    $("#ld_select").empty();
+    ks_l.forEach(function(n){$('#ld_select')
+                              .append($('<option>',{n:n}).text(n));});
+
+    var ks_n = get_keys(graph_data.nodes);
+    $("#charge_select").empty();
+    ks_n.forEach(function(n){$('#charge_select')
+                              .append($('<option>',{n:n}).text(n));});
+
+    $("#nc_select").empty();
+    ks_n.forEach(function(n){$('#nc_select')
                               .append($('<option>',{n:n}).text(n));});
     // Defining a function to grab the name for each node
     //node.append("svg:title")
@@ -270,11 +260,3 @@ function draw_graph(error, graph_data) {
     });
 };
 
-function node_keys(nodes){
-    var all_keys = {};
-    var keys;
-    nodes.forEach(function(n){
-                     Object.keys(n).forEach(function(k){
-                                              all_keys[k]=true;});});
-    return Object.keys(all_keys);
-}

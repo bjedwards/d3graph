@@ -33,13 +33,19 @@ function init(){
                          force.gravity(Number($('#gravity').val())).resume();
                        });
 
+  var charge_cons = function(n){
+                      if ((n<=0) && (typeof n == "number"))
+                        return true; 
+                      else 
+                        return false;
+                    };
   var charge_func = function() {
                       var c_def = $("#charge").val();
                       var c;
                       if ($("#charge_prop").is(':checked')){
                         $("#charge_select").removeAttr("disabled");
                         prop = $("#charge_select").val()
-                        c = safe_val(prop,c_def,"number");
+                        c = safe_val(prop,c_def,charge_cons);
                       }
                       else {
                         $("#charge_select").attr("disabled",true);
@@ -50,14 +56,21 @@ function init(){
   $("#charge").change(charge_func);
   $("#charge_prop").change(charge_func);
   $("#charge_select").change(charge_func);
-  
+ 
+  var ld_cons = function(l) {
+                  if ((l>=0) && (typeof l =="number"))
+                    return true;
+                  else
+                    return false;
+                };
+
   var ld_func = function() {
                   var ld_def = $("#link_distance").val();
                   var ld;
                   if ($("#link_distance_prop").is(':checked')){
                     $("#ld_select").removeAttr("disabled");
                     prop = $("#ld_select").val()
-                    ld = safe_val(prop,ld_def,"number");
+                    ld = safe_val(prop,ld_def,ld_cons);
                   }
                   else {
                       $("#ld_select").attr("disabled",true);
@@ -78,13 +91,20 @@ function init(){
                        force.theta(Number($('#theta').val())).resume();
                      });
 
+  var ls_cons = function(l) {
+                  if ((l>=0) && (l<=1) && (typeof l== "number"))
+                    return true;
+                  else
+                    return false;
+                  };
+
   var ls_func = function() {
                   var ls_def = $("#link_strength").val();
                   var ls;
                   if ($("#link_strength_prop").is(':checked')){
                     $("#ls_select").removeAttr("disabled");
                     prop = $("#ls_select").val()
-                    ls = safe_val(prop,ls_def,"number");
+                    ls = safe_val(prop,ls_def,ls_cons);
                   }
                   else {
                       $("#ls_select").attr("disabled",true);
@@ -122,27 +142,46 @@ function init(){
                                             .text(f));
                                    });},
            complete:init_graph });
+  
+  var node_color_change = function() {
+    var def_c = $("#node_color_pick").val();
+    var prop_c = $("#nc_select").val();
+    var type = $('input[name=node_color_rad]:checked').val();
+    console.log(type);
+    if (type == "static")
+    {
+      node.style("fill", function(d) {
+                           return def_c;
+                         });
+      $("#nc_select").attr("disabled",true)
+    }
+    else if (type == "color")
+    {
+      console.log(def_c);
+      console.log(prop_c);
+      node.style("fill", safe_val(prop_c,def_c,colorsafe));
+      $("#nc_select").removeAttr("disabled");
+    }
+    else
+    {
+      node.style("fill", function(d) {
+                           return def_c;
+                         });
+    }
+  };
 
-  $("#node_color_pick").change(function(){
-                                 node.style("fill",function(d) {
-                                                     return $('#node_color_pick').val();
-                                                   });
-                                         });
+  $("input[name=node_color_rad]").change(node_color_change);
+  $("#nc_select").change(node_color_change);
 
-  //$('<br><label for=node_color_pick>Node Color: </label>')
-  //  .appendTo('#prop_select');
-  //$('<input></input>')
-  // .attr({"id":"node_color_pick",
-  //        "type":"color",
-  //        "value":"#ff0000"})
-  // .change(function(){ node.style("fill", function(d){return $('#node_color_pick').val();}); })
-  // .appendTo("#prop_select");
-
+  $("#node_color_pick").change(node_color_change);
 };
 
-function safe_val(property,def,type){
+function colorsafe(c) {
+  return /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i.test(c)
+}
+function safe_val(property,def,cons){
   return function(d) {
-    if ((typeof d[property] == "undefined") || (typeof d[property] != type))
+    if ((typeof d[property] == "undefined") || (!cons(d[property])))
       return def;
     else
       return d[property];

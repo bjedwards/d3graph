@@ -39,16 +39,20 @@ function init(){
                       else 
                         return false;
                     };
+  $("#charge_select").slideUp("fast");
+  $("#charge_select_label").slideUp("fast");
   var charge_func = function() {
                       var c_def = $("#charge").val();
                       var c;
                       if ($("#charge_prop").is(':checked')){
-                        $("#charge_select").removeAttr("disabled");
+                        $("#charge_select").slideDown("slow");
+                        $("#charge_select_label").slideDown("slow");
                         prop = $("#charge_select").val()
                         c = safe_val(prop,c_def,charge_cons);
                       }
                       else {
-                        $("#charge_select").attr("disabled",true);
+                        $("#charge_select").slideUp("slow");
+                        $("#charge_select_label").slideUp("slow");
                         c = c_def;
                       }
                       force.charge(c).stop().start();

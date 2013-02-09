@@ -39,20 +39,17 @@ function init(){
                       else 
                         return false;
                     };
-  $("#charge_select").slideUp("fast");
-  $("#charge_select_label").slideUp("fast");
+  $("#charge_select, #charge_select_label").slideUp("fast");
   var charge_func = function() {
                       var c_def = $("#charge").val();
                       var c;
                       if ($("#charge_prop").is(':checked')){
-                        $("#charge_select").slideDown("slow");
-                        $("#charge_select_label").slideDown("slow");
+                        $("#charge_select, #charge_select_label").slideDown("slow");
                         prop = $("#charge_select").val()
                         c = safe_val(prop,c_def,charge_cons);
                       }
                       else {
-                        $("#charge_select").slideUp("slow");
-                        $("#charge_select_label").slideUp("slow");
+                        $("#charge_select, #charge_select_label").slideUp("slow");
                         c = c_def;
                       }
                       force.charge(c).stop().start();
@@ -67,17 +64,17 @@ function init(){
                   else
                     return false;
                 };
-
+  $("#ld_select, #ld_select_label").slideUp("fast");
   var ld_func = function() {
                   var ld_def = $("#link_distance").val();
                   var ld;
                   if ($("#link_distance_prop").is(':checked')){
-                    $("#ld_select").removeAttr("disabled");
+                    $("#ld_select, #ld_select_label").slideDown("slow");
                     prop = $("#ld_select").val()
                     ld = safe_val(prop,ld_def,ld_cons);
                   }
                   else {
-                      $("#ld_select").attr("disabled",true);
+                      $("#ld_select, #ld_select_label").slideUp("slow");
                       ld = ld_def;
                     }
                   force.linkDistance(ld).stop().start();
@@ -95,6 +92,7 @@ function init(){
                        force.theta(Number($('#theta').val())).resume();
                      });
 
+  $("#ls_select, #ls_select_label").slideUp("fast");
   var ls_cons = function(l) {
                   if ((l>=0) && (l<=1) && (typeof l== "number"))
                     return true;
@@ -106,12 +104,13 @@ function init(){
                   var ls_def = $("#link_strength").val();
                   var ls;
                   if ($("#link_strength_prop").is(':checked')){
-                    $("#ls_select").removeAttr("disabled");
+                    $("#ls_select, #ls_select_label").slideDown("slow");
                     prop = $("#ls_select").val()
                     ls = safe_val(prop,ls_def,ls_cons);
                   }
                   else {
                       $("#ls_select").attr("disabled",true);
+                      $("#ls_select, #ls_select_label").slideUp("slow");
                       ls = ls_def;
                     }
                   force.linkStrength(ls).stop().start();
@@ -146,31 +145,31 @@ function init(){
                                             .text(f));
                                    });},
            complete:init_graph });
-  
+
+  $("#nc_select, #nc_select_label").slideUp("fast");
+  $("#nc_cmap_select, #nc_cmap_select_label").slideUp("fast");
   var node_color_change = function() {
     var def_c = $("#node_color_pick").val();
     var prop_c = $("#nc_select").val();
     var type = $('input[name=node_color_rad]:checked').val();
-    console.log(type);
     if (type == "static")
     {
       node.style("fill", function(d) {
                            return def_c;
                          });
-      $("#nc_select").attr("disabled",true)
+      $("#nc_select, #nc_select_label").slideUp("slow");
     }
     else if (type == "color")
     {
-      console.log(def_c);
-      console.log(prop_c);
       node.style("fill", safe_val(prop_c,def_c,colorsafe));
-      $("#nc_select").removeAttr("disabled");
+      $("#nc_select, #nc_select_label").slideDown("slow");
     }
     else
     {
       node.style("fill", function(d) {
                            return def_c;
                          });
+      $("#nc_select, #nc_select_label").slideUp("slow");
     }
   };
 

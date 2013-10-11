@@ -1,5 +1,7 @@
 body {
   background-color:#FFFFFF;
+  font-family:monospace;
+  font-size:10pt;
 }
 
 label {
@@ -15,10 +17,20 @@ input {
 
 #controls_div {
   position:absolute;
-  width:300px;
+  width:400px;
+}
+
+#node_div {
+  width:10px;
 }
 
 #node_color_div {
+}
+
+#node_color_pick{
+  font-size: 10pt;
+  font-family:monospace;
+  width:100px;
 }
 
 #gs_div {
@@ -30,7 +42,7 @@ input {
 #svg_div {
   position:absolute;
   top:40px;
-  left:350px;
+  left:450px;
   background-color:#DEDEDE;
 }
 
@@ -41,11 +53,11 @@ ul {
 }
 
 fieldset.outer {
-  width:300px;
+  width:400px;
 }
 
 fieldset.inner {
-  width:250px;
+  width:350px;
 }
 
 .node {
@@ -74,6 +86,12 @@ input[type="range"] {
   width:95px;
 }
 
+input[type="color"] {
+  font-size: 10pt;
+}
+
 select {
-  width:95px;
+  width:150 px;
+  font-size:10pt;
+  font-family: monospace;
 }

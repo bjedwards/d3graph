@@ -132,10 +132,10 @@ function init(){
                               if ($('#graph_select').val() == "none")
                                 return;
                               else
-                                d3.json('data/'+$('#graph_select').val(),draw_graph);
+                                d3.json(''+$('#graph_select').val(),draw_graph);
                             });
    
-  $.ajax({url: "http://127.0.0.1:8000/data",
+  $.ajax({url: "http://localhost:8080/data",
            success: function(data){
                       $(data).find("a:contains(.json)")
                              .each(function(n){
@@ -208,7 +208,7 @@ function init_graph(){
 // it sends the json to draw_graph
   if ($('#graph_select').val() == "none")
     return;
-  d3.json('data/'+$('#graph_select').val(),draw_graph);
+  d3.json($('#graph_select').val(),draw_graph);
 }
 
 function draw_graph(error, graph_data) {
@@ -231,23 +231,50 @@ function draw_graph(error, graph_data) {
   // and link data and start laying things out 
     force
         .nodes(graph_data.nodes)
-        .links(graph_data.links)
-        .start();
-
-    // Select all the things that have the property
-    // line.edge. Then we replace the acutal link json data
-    // This then returns an updated selection
-    // The append is key, it means for)each element of the
-    // array (source, target) we are adding a line
-    // Each subsequent call, modifies something
-    // IE defines a class, or style
-    // Then it returns the whole selection
-    var link = svg.selectAll("line.link")
-        .data(graph_data.links)//adds the graph data to line
-        .enter().append("line")
-        .attr("class", "link")
-        .style("stroke-width", function(d) { return d.width; })
-        .style("stroke", function(d) {return d.color;});
+        .links(graph_data.links);
+    if ($("#edge_arrows").is(':checked'))
+    {
+      svg.append("svg:defs").selectAll("marker")
+          .data(["end"])
+        .enter().append("svg:marker")
+          .attr("id", String)
+          .attr("viewBox", "0 -5 10 10")
+          .attr("refX", 10)
+          .attr("refY", 0)
+          .attr("markerWidth", 6)
+          .attr("markerHeight", 6)
+          .attr("orient", "auto")
+        .append("svg:path")
+          .attr("d", "M0,-5L10,0L0,5z");
+      
+      // Select all the things that have the property
+      // line.edge. Then we replace the acutal link json data
+      // This then returns an updated selection
+      // The append is key, it means for each element of the
+      // array (source, target) we are adding a line
+      // Each subsequent call, modifies something
+      // IE defines a class, or style
+      // Then it returns the whole selection
+      var link = svg.selectAll("line.link")
+          .data(force.links())//adds the graph data to line
+          .enter().append("svg:path")
+            .attr("class","link")
+            .attr("marker-end","url(#end)")
+          //.enter().append("line")
+          //.attr("class", "link")
+            .style("stroke-width", function(d) { return d.width; })
+            .style("fill",function(d) { return d.color; })
+            .style("stroke", function(d) {return d.color;});
+    }
+    else
+    {
+      var link = svg.selectAll("line.link")
+          .data(force.links())//adds the graph data to line
+          .enter().append("svg:path")
+            .attr("class", "link")
+            .style("stroke-width", function(d) { return d.width; })
+            .style("stroke", function(d) {return d.color;});
+    }
 
     // Same thing as the links, except we are adding
     // the circle
@@ -291,14 +318,29 @@ function draw_graph(error, graph_data) {
 
     // For each tick in time what the hell do we do with the layout
     // Specifically we want to move the links around
-    force.on("tick", function() {
-      link.attr("x1", function(d) { return d.source.x; })
-          .attr("y1", function(d) { return d.source.y; })
-          .attr("x2", function(d) { return d.target.x; })
-          .attr("y2", function(d) { return d.target.y; });
+    function tick() {
+      // draw directed edges with proper padding from node centers
+      link.attr('d', function(d) {
+        var deltaX = d.target.x - d.source.x,
+            deltaY = d.target.y - d.source.y,
+            dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY),
+            normX = deltaX / dist,
+            normY = deltaY / dist,
+            sourcePadding = d.source.size,
+            targetPadding = d.target.size,
+            sourceX = d.source.x + (sourcePadding * normX),
+            sourceY = d.source.y + (sourcePadding * normY),
+            targetX = d.target.x - (targetPadding * normX),
+            targetY = d.target.y - (targetPadding * normY);
+        return 'M' + sourceX + ',' + sourceY + 'L' + targetX + ',' + targetY;
+      });
+    
+      node.attr('transform', function(d) {
+        return 'translate(' + d.x + ',' + d.y + ')';
+      });
+    }
 
-      node.attr("cx", function(d) { return d.x; })
-          .attr("cy", function(d) { return d.y; });
-    });
+    force.on("tick", tick);
+    force.start();
 };
 

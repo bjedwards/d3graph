@@ -119,32 +119,79 @@
         </ul>
       </fieldset>
     </div>
-    <div id="node_color_div">
-      <fieldset id="node_color_fs" class="outer">
-        <legend id="node_color_legend">Node Color: </legend>
-        <ul id="node_color_list">
-          <li><form>
-            <input type="radio" name="node_color_rad" value="static" checked>Static
-            <input type="radio" name="node_color_rad" value="color">Color
-            <input type="radio" name="node_color_rad" value="float">Number
-            <input type="radio" name="node_color_rad" value="cat">Category
-          </form>
-          </li>
-          <li><label for="node_color_pick">Default: </label>
-          <input id="node_color_pick"
-                 class="color"
-                 value="#FF0000"><br>
-          </li>
-          <li><label id="nc_select_label" for="nc_select">Property: </label>
-          <select id="nc_select"></select><br>
-          </li>
-          <li><label id="nc_cmap_select_label" for="nc_cmap_select">Color Map: </label>
-          <select id="nc_cmap_select"></select>
+    <br>
+    <div id="node_div">
+      <fieldset id="node_fs" class="outer">
+        <legend id="node_legend">Nodes </legend>
+        <ul id="node_list">
+          <li>
+          <div id="node_color_div">
+            <fieldset id="node_color_fs" class="inner">
+              <legend id="node_color_legend">Node Color </legend>
+              <ul id="node_color_list">
+                <li><form>
+                  <input type="radio" name="node_color_rad" value="static" checked>Static
+                  <input type="radio" name="node_color_rad" value="color">Color
+                  <input type="radio" name="node_color_rad" value="float">Number
+                  <input type="radio" name="node_color_rad" value="cat">Category
+                </form>
+                </li>
+                <li><label for="node_color_pick">Default: </label>
+                <input id="node_color_pick"
+                       class="color"
+                       value="#FF0000"><br>
+                </li>
+                <li><label id="nc_select_label" for="nc_select">Property: </label>
+                <select id="nc_select"></select><br>
+                </li>
+                <li><label id="nc_cmap_select_label" for="nc_cmap_select">Color Map: </label>
+                <select id="nc_cmap_select"></select>
+                </li>
+              </ul>
+            </fieldset>
+          </div>
           </li>
         </ul>
       </fieldset>
     </div>
-  </div>
+    <br>
+    <div id="edge_div">
+      <fieldset id="edge_fs" class="outer">
+        <legend id="edge_legend">Edges </legend>
+        <ul id="edge_list">
+          <li><label for="edge_arrows">Arrows: </label>
+              <input id="edge_arrows" type="checkbox" value="off">
+          </li>
+          <li>
+          <div id="edge_color_div">
+            <fieldset id="edge_color_fs" class="inner">
+              <legend id="edge_color_legend">Edge Color </legend>
+              <ul id="edge_color_list">
+                <li><form>
+                  <input type="radio" name="edge_color_rad" value="static" checked>Static
+                  <input type="radio" name="edge_color_rad" value="color">Color
+                  <input type="radio" name="edge_color_rad" value="float">Number
+                  <input type="radio" name="edge_color_rad" value="cat">Category
+                </form>
+                </li>
+                <li><label for="edge_color_pick">Default: </label>
+                <input id="edge_color_pick"
+                       class="color"
+                       value="#FF0000"><br>
+                </li>
+                <li><label id="ec_select_label" for="ec_select">Property: </label>
+                <select id="ec_select"></select><br>
+                </li>
+                <li><label id="ec_cmap_select_label" for="ec_cmap_select">Color Map: </label>
+                <select id="ec_cmap_select"></select>
+                </li>
+              </ul>
+            </fieldset>
+          </div>
+          </li>
+        </ul>
+      </fieldset>
+    </div>
   <div id="svg_div">
     <svg id="graph_svg"
          width=1024
